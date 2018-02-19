@@ -1,0 +1,40 @@
+﻿<Window x:Class="WhoWatchListen.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WhoWatchListen"
+        mc:Ignorable="d"
+        Title="ふわっちリッスン" Height="350" Width="693" Loaded="Window_Loaded" Closing="Window_Closing" HorizontalAlignment="Left" Icon="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg">
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+    <StackPanel Height="323" VerticalAlignment="Top" Margin="0,0,2,-4">
+        <WrapPanel Height="57" VerticalAlignment="Top" Width="683" Background="#FFF99948" HorizontalAlignment="Left">
+            <Button x:Name="whoWatchBtn" Content="ふわっち" Width="75" Height="58" Click="whoWatchBtn_Click">
+                <Button.Background>
+                    <ImageBrush Stretch="UniformToFill" ImageSource="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="updateBtn" Content="" Width="75" Click="updateBtn_Click">
+                <Button.Background>
+                    <ImageBrush Stretch="UniformToFill" ImageSource="pack://siteoforigin:,,,/Resources/update.png"/>
+                </Button.Background>
+            </Button>
+            <TextBox x:Name="liveIdTextBox" Height="58" TextWrapping="Wrap" Width="305" FontSize="32" KeyUp="liveIdTextBox_KeyUp"/>
+        </WrapPanel>
+        <DataGrid x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding UiCommentDataCollection}" CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False" AutoGenerateColumns="False" BorderThickness="1" RenderTransformOrigin="0.503,0.468" Height="261" FontSize="20">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="アイコン">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding UserThumbUrl}" Width="30"></Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding UserName}" ClipboardContentBinding="{x:Null}" Header="スクリーンネーム"/>
+                <DataGridTextColumn Binding="{Binding CommentStr}" ClipboardContentBinding="{x:Null}" Header="コメント"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</Window>
