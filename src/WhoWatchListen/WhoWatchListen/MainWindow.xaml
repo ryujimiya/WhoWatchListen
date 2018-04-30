@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhoWatchListen"
         mc:Ignorable="d"
-        Title="ふわっちリッスン" Height="350" Width="693" Loaded="Window_Loaded" Closing="Window_Closing" HorizontalAlignment="Left" Icon="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg">
+        Title="ふわっちリッスン" Height="570.025" Width="693" Loaded="Window_Loaded" Closing="Window_Closing" HorizontalAlignment="Left" Icon="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg" SizeChanged="Window_SizeChanged">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
-    <StackPanel Height="323" VerticalAlignment="Top" Margin="0,0,2,-4">
-        <WrapPanel Height="57" VerticalAlignment="Top" Width="683" Background="#FFF99948" HorizontalAlignment="Left">
+    <StackPanel x:Name="stackPanel1" VerticalAlignment="Top" Margin="0,0,2,-5" Height="544">
+        <WrapPanel x:Name="wrapPanel1" Height="57" VerticalAlignment="Top" Width="683" Background="#FFF99948" HorizontalAlignment="Left">
             <Button x:Name="whoWatchBtn" Content="ふわっち" Width="75" Height="58" Click="whoWatchBtn_Click">
                 <Button.Background>
                     <ImageBrush Stretch="UniformToFill" ImageSource="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg"/>
@@ -23,12 +23,12 @@
             </Button>
             <TextBox x:Name="liveIdTextBox" Height="58" TextWrapping="Wrap" Width="305" FontSize="32" KeyUp="liveIdTextBox_KeyUp"/>
         </WrapPanel>
-        <DataGrid x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding UiCommentDataCollection}" CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False" AutoGenerateColumns="False" BorderThickness="1" RenderTransformOrigin="0.503,0.468" Height="261" FontSize="20">
+        <DataGrid x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding UiCommentDataCollection}" CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False" AutoGenerateColumns="False" BorderThickness="1" RenderTransformOrigin="0.503,0.468" FontSize="20" Height="487">
             <DataGrid.Columns>
                 <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="アイコン">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding UserThumbUrl}" Width="30"></Image>
+                            <Image Source="{Binding UserThumbUrl}" Width="30"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

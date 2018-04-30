@@ -26,30 +26,11 @@ namespace WhoWatchListen
         /// <summary>
         /// コメントデータリストのデータバインディング用
         /// </summary>
-        public ObservableCollection<UiCommentData> UiCommentDataCollection { get; set; }
+        public ObservableCollection<UiCommentData> UiCommentDataCollection { get; }
 
         public ViewModel()
         {
             UiCommentDataCollection = new ObservableCollection<UiCommentData>();
-            /*
-            // dummy
-            UiCommentData workUiCommentData;
-            workUiCommentData= new UiCommentData();
-            workUiCommentData.UserName = "匿名";
-            workUiCommentData.CommentStr = "Hello, World!";
-            workUiCommentData.UserThumbUrl = "";
-            UiCommentDataCollection.Add(workUiCommentData);
-            workUiCommentData = new UiCommentData();
-            workUiCommentData.UserName = "匿名";
-            workUiCommentData.CommentStr = "Hello, World!";
-            workUiCommentData.UserThumbUrl = "";
-            UiCommentDataCollection.Add(workUiCommentData);
-            workUiCommentData = new UiCommentData();
-            workUiCommentData.UserName = "匿名";
-            workUiCommentData.CommentStr = "Hello, World!";
-            workUiCommentData.UserThumbUrl = "";
-            UiCommentDataCollection.Add(workUiCommentData);
-            */
         }
     }
 }

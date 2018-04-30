@@ -3,7 +3,7 @@
 ふわっちの棒読みちゃんを使ったコメント音声読み上げアプリです。
 
 **リリース情報**  
-version1.0.0.0  
+version1.0.0.1  
 　[インストーラー](https://github.com/ryujimiya/WhoWatchListen/blob/master/publish/)  
 
 ![ふわっちリッスン](https://stat.ameba.jp/user_images/20180219/19/ryujimiya/f5/e3/j/o0511034314134818064.jpg?caw=800)  

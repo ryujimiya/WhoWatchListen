@@ -74,6 +74,20 @@ namespace WhoWatchListen
         }
 
         /// <summary>
+        /// ウィンドウのサイズが変更された
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // ウィンドウの高さ Note:最大化のときthis.Heightだと値がセットされない
+            double height = this.RenderSize.Height;
+            // データグリッドの高さ変更
+            stackPanel1.Height = height;
+            dataGrid.Height = stackPanel1.Height - wrapPanel1.Height - 20; // -20:少し高さを小さく見積もる
+        }
+
+        /// <summary>
         /// ふわっちクライアントからコメントを受信した
         /// </summary>
         /// <param name="sender"></param>
@@ -143,7 +157,6 @@ namespace WhoWatchListen
             }
 
         }
-
 
         /// <summary>
         /// ふわっちボタンがクリックされた
