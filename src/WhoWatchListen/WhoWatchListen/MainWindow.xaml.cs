@@ -83,8 +83,8 @@ namespace WhoWatchListen
             // ウィンドウの高さ Note:最大化のときthis.Heightだと値がセットされない
             double height = this.RenderSize.Height;
             // データグリッドの高さ変更
-            stackPanel1.Height = height;
-            dataGrid.Height = stackPanel1.Height - wrapPanel1.Height - 20; // -20:少し高さを小さく見積もる
+            stackPanel1.Height = height - SystemParameters.CaptionHeight;
+            dataGrid.Height = stackPanel1.Height - wrapPanel1.Height;
         }
 
         /// <summary>
