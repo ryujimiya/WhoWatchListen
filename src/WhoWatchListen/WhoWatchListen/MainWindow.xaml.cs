@@ -25,11 +25,11 @@ namespace WhoWatchListen
         /// <summary>
         /// タイトルのベース
         /// </summary>
-        private string TitleBase = "";
+        private string titleBase = "";
         /// <summary>
         /// 棒読みちゃん
         /// </summary>
-        private MyUtilLib.BouyomiChan BouyomiChan = new MyUtilLib.BouyomiChan();
+        private MyUtilLib.BouyomiChan bouyomiChan = new MyUtilLib.BouyomiChan();
 
         /// <summary>
         /// ふわっちクライアント
@@ -44,8 +44,8 @@ namespace WhoWatchListen
             InitializeComponent();
 
             // GUI初期処理
-            TitleBase = this.Title + " " + MyUtil.GetFileVersion();
-            this.Title = TitleBase;
+            titleBase = this.Title + " " + MyUtil.GetFileVersion();
+            this.Title = titleBase;
         }
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace WhoWatchListen
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             whoWatchClient = new WhoWatchClient();
-            whoWatchClient.OnCommentReceiveEach += WhoWatchClient_OnCommentReceiveEach;
-            whoWatchClient.OnCommentReceiveDone += WhoWatchClient_OnCommentReceiveDone;
+            whoWatchClient.OnCommentReceiveEach += whoWatchClient_OnCommentReceiveEach;
+            whoWatchClient.OnCommentReceiveDone += whoWatchClient_OnCommentReceiveDone;
         }
 
 
@@ -69,8 +69,8 @@ namespace WhoWatchListen
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             whoWatchClient.Stop();
-            BouyomiChan.ClearText();
-            BouyomiChan.Dispose();
+            bouyomiChan.ClearText();
+            bouyomiChan.Dispose();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace WhoWatchListen
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="comment"></param>
-        private void WhoWatchClient_OnCommentReceiveEach(WhoWatchClient sender, CommentStruct comment)
+        private void whoWatchClient_OnCommentReceiveEach(WhoWatchClient sender, CommentStruct comment)
         {
             // コメントの追加
             UiCommentData uiCommentData = new UiCommentData();
@@ -112,7 +112,7 @@ namespace WhoWatchListen
             writeLog(uiCommentData.UserName, uiCommentData.CommentStr);
 
             // 棒読みちゃんへ送信
-            BouyomiChan.Talk(uiCommentData.CommentStr);
+            bouyomiChan.Talk(uiCommentData.CommentStr);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace WhoWatchListen
         /// ふわっちクライアントのコメント受信が完了した
         /// </summary>
         /// <param name="sender"></param>
-        private void WhoWatchClient_OnCommentReceiveDone(WhoWatchClient sender)
+        private void whoWatchClient_OnCommentReceiveDone(WhoWatchClient sender)
         {
             // データグリッドを自動スクロール
             dataGridScrollToEnd();
@@ -194,7 +194,7 @@ namespace WhoWatchListen
             // いま稼働しているクライアントを停止する
             whoWatchClient.Stop();
 
-            BouyomiChan.ClearText();
+            bouyomiChan.ClearText();
 
             // 新しいライブIdを取得
             string liveId = liveIdTextBox.Text;

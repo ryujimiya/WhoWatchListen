@@ -148,15 +148,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\whowatch_icon.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="whowatch_listen_icon.ico" />
+    <Resource Include="Resources\whowatch_icon.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\update.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Resources\update.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -170,6 +165,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="whowatch_listen_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\whowatch_listen_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

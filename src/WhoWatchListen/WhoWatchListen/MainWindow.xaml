@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhoWatchListen"
         mc:Ignorable="d"
-        Title="ふわっちリッスン" Height="570.025" Width="693" Loaded="Window_Loaded" Closing="Window_Closing" HorizontalAlignment="Left" Icon="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg" SizeChanged="Window_SizeChanged">
+        Title="ふわっちリッスン" Height="570.025" Width="693" Loaded="Window_Loaded" Closing="Window_Closing" HorizontalAlignment="Left" Icon="Resources/whowatch_listen_icon.png" SizeChanged="Window_SizeChanged">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
     <StackPanel x:Name="stackPanel1" VerticalAlignment="Top" Margin="0,0,2,-5" Height="544">
-        <WrapPanel x:Name="wrapPanel1" Height="57" VerticalAlignment="Top" Width="683" Background="#FFF99948" HorizontalAlignment="Left">
+        <WrapPanel x:Name="wrapPanel1" Height="57" VerticalAlignment="Top" Background="#FFF99948">
             <Button x:Name="whoWatchBtn" Content="ふわっち" Width="75" Height="58" Click="whoWatchBtn_Click">
                 <Button.Background>
-                    <ImageBrush Stretch="UniformToFill" ImageSource="pack://siteoforigin:,,,/Resources/whowatch_icon.jpg"/>
+                    <ImageBrush Stretch="UniformToFill" ImageSource="Resources/whowatch_icon.jpg"/>
                 </Button.Background>
             </Button>
             <Button x:Name="updateBtn" Content="" Width="75" Click="updateBtn_Click">
                 <Button.Background>
-                    <ImageBrush Stretch="UniformToFill" ImageSource="pack://siteoforigin:,,,/Resources/update.png"/>
+                    <ImageBrush Stretch="UniformToFill" ImageSource="Resources/update.png"/>
                 </Button.Background>
             </Button>
             <TextBox x:Name="liveIdTextBox" Height="58" TextWrapping="Wrap" Width="305" FontSize="32" KeyUp="liveIdTextBox_KeyUp"/>

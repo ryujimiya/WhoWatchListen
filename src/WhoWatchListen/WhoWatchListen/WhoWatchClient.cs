@@ -191,7 +191,7 @@ namespace WhoWatchListen
         /// </summary>
         private DispatcherTimer whoWatchGetCommentDTimer;
 
-        private bool IsTimerProcess = false; 
+        private bool isTimerProcess = false; 
 
 
         /// <summary>
@@ -235,14 +235,14 @@ namespace WhoWatchListen
         /// <param name="e"></param>
         private void whoWatchGetCommentDTimer_Tick(object sender, EventArgs e)
         {
-            if (IsTimerProcess)
+            if (isTimerProcess)
             {
                 return;
             }
 
-            IsTimerProcess = true;
+            isTimerProcess = true;
             whoWatchGetCommentsHandle();
-            IsTimerProcess = false;
+            isTimerProcess = false;
         }
 
         /// <summary>
