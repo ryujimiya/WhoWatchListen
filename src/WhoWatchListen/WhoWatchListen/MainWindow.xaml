@@ -21,7 +21,7 @@
                     <ImageBrush Stretch="UniformToFill" ImageSource="Resources/update.png"/>
                 </Button.Background>
             </Button>
-            <TextBox x:Name="liveIdTextBox" Height="58" TextWrapping="Wrap" Width="305" FontSize="32" KeyUp="liveIdTextBox_KeyUp"/>
+            <TextBox x:Name="accountNameTextBox" Height="58" TextWrapping="Wrap" Width="305" FontSize="32" KeyUp="accountNameTextBox_KeyUp"/>
         </WrapPanel>
         <DataGrid x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding UiCommentDataCollection}" CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False" AutoGenerateColumns="False" BorderThickness="1" RenderTransformOrigin="0.503,0.468" FontSize="20" Height="487">
             <DataGrid.Columns>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,8 +59,8 @@ namespace WhoWatchListen
             whoWatchClient = new WhoWatchClient();
             whoWatchClient.OnCommentReceiveEach += whoWatchClient_OnCommentReceiveEach;
             whoWatchClient.OnCommentReceiveDone += whoWatchClient_OnCommentReceiveDone;
+            whoWatchClient.OnLiveIdChanged += WhoWatchClient_OnLiveIdChanged;
         }
-
 
         /// <summary>
         /// ウィンドウが閉じられようとしている
@@ -85,6 +86,15 @@ namespace WhoWatchListen
             // データグリッドの高さ変更
             stackPanel1.Height = height - SystemParameters.CaptionHeight;
             dataGrid.Height = stackPanel1.Height - wrapPanel1.Height;
+        }
+
+        /// <summary>
+        /// ライブIDが変更された
+        /// </summary>
+        /// <param name="sender"></param>
+        private void WhoWatchClient_OnLiveIdChanged(WhoWatchClient sender)
+        {
+            updateAccountName();
         }
 
         /// <summary>
@@ -155,7 +165,6 @@ namespace WhoWatchListen
                     if (scroll != null) scroll.ScrollToEnd();
                 }
             }
-
         }
 
         /// <summary>
@@ -165,8 +174,8 @@ namespace WhoWatchListen
         /// <param name="e"></param>
         private void whoWatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            string liveId = whoWatchClient.LiveId;
-            if (liveId == "")
+            ulong liveId = whoWatchClient.LiveId;
+            if (liveId == 0)
             {
                 return;
             }
@@ -183,37 +192,45 @@ namespace WhoWatchListen
         /// <param name="e"></param>
         private void updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            updateLiveId();
+            updateAccountName();
         }
 
         /// <summary>
-        /// ライブIDの更新
+        /// アカウント名の更新
         /// </summary>
-        private void updateLiveId()
+        private void updateAccountName()
         {
             // いま稼働しているクライアントを停止する
             whoWatchClient.Stop();
 
             bouyomiChan.ClearText();
 
-            // 新しいライブIdを取得
-            string liveId = liveIdTextBox.Text;
+            // 新しいアカウント名を取得
+            string accountName = accountNameTextBox.Text;
+
+            if (Regex.IsMatch(accountName, "^[0-9]+$"))
+            {
+                // ライブIDが入力されたとき
+                ulong liveId = ulong.Parse(accountName);
+                // アカウント名を取得
+                accountName = whoWatchClient.GetAccountNameFromLiveId(liveId);
+                this.accountNameTextBox.Text = accountName;
+            }
 
             // クライアントを開始する
-            whoWatchClient.Start(liveId);
-
+            whoWatchClient.Start(accountName);
         }
 
         /// <summary>
-        /// ライブIDテキストボックスのキーアップイベントハンドラ
+        /// アカウント名テキストボックスのキーアップイベントハンドラ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void liveIdTextBox_KeyUp(object sender, KeyEventArgs e)
+        private void accountNameTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                updateLiveId();
+                updateAccountName();
             }
         }
     }

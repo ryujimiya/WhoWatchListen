@@ -21,6 +21,11 @@ namespace WhoWatchListen
     /// <param name="sender">チャットクライアント</param>
     /// </summary>
     public delegate void OnCommentReceiveDoneDelegate(WhoWatchClient sender);
+    /// <summary>
+    /// ライブIDが変更されたときのイベントハンドラデリゲート
+    /// </summary>
+    /// <param name="sender">チャットクライアント</param>
+    public delegate void OnLiveIdChangedDelegate(WhoWatchClient sender);
 
 
     /// <summary>
@@ -60,6 +65,48 @@ namespace WhoWatchListen
         ///////////////////////////////////////////////////////////////////////
         // 型
         ///////////////////////////////////////////////////////////////////////
+        //------------------------------------------------------------------
+        // プロフィール取得API用
+        public class Live2
+        {
+            public ulong id { get; set; }
+            public string title { get; set; }
+            public string client_type { get; set; }
+            public long started_at { get; set; }
+            public bool hide_category_default_badge { get; set; }
+            public string thumbnail_url { get; set; }
+            public ulong running_time { get; set; }
+            public bool is_comment_disallowed { get; set; }
+        }
+
+        public class WhoWatchProfileApiObject
+        {
+            public ulong user_id { get; set; }
+            public string name { get; set; }
+            public string description { get; set; }
+            public string icon_url { get; set; }
+            public string background_url { get; set; }
+            public ulong show_follow_list { get; set; }
+            public ulong show_follower_list { get; set; }
+            public Live2 live { get; set; }
+            public string account_name { get; set; }
+            public string user_path { get; set; }
+            public ulong follow_count { get; set; }
+            public ulong follower_count { get; set; }
+            public bool is_follow { get; set; }
+            public string twitter_id { get; set; }
+            public bool is_blocked { get; set; }
+            public string gender { get; set; }
+            public string date_of_birth { get; set; }
+            public string area { get; set; }
+            public List<string> likes { get; set; }
+            public bool is_follow_backed { get; set; }
+            public ulong live_history_count { get; set; }
+            public bool is_push_registered { get; set; }
+        }
+
+        //------------------------------------------------------------------
+        // コメント取得API用
         public class UserProfile
         {
             public bool is_date_of_birth_today { get; set; }
@@ -81,7 +128,7 @@ namespace WhoWatchListen
 
         public class Category
         {
-            public int id { get; set; }
+            public ulong id { get; set; }
             public string name { get; set; }
             public string badge { get; set; }
             public bool is_movie_only { get; set; }
@@ -100,19 +147,19 @@ namespace WhoWatchListen
             public string client_type { get; set; }
             public Category category { get; set; }
             public string substitute_image_url { get; set; }
-            public long started_at { get; set; }
-            public int time_limit { get; set; }
-            public int live_act_limit { get; set; }
-            public int extension_option_limit { get; set; }
-            public int total_view_count { get; set; }
-            public int comment_count { get; set; }
-            public int item_count { get; set; }
+            public ulong started_at { get; set; }
+            public ulong time_limit { get; set; }
+            public ulong live_act_limit { get; set; }
+            public ulong extension_option_limit { get; set; }
+            public ulong total_view_count { get; set; }
+            public ulong comment_count { get; set; }
+            public ulong item_count { get; set; }
             public string live_finished_image_url { get; set; }
             public string latest_thumbnail_url { get; set; }
-            public int running_time { get; set; }
+            public ulong running_time { get; set; }
             public bool is_mute { get; set; }
             public bool is_automatic_extension { get; set; }
-            public int view_count { get; set; }
+            public ulong view_count { get; set; }
         }
 
         public class UserProfile2
@@ -148,7 +195,7 @@ namespace WhoWatchListen
         {
             public string name { get; set; }
             public string image_url { get; set; }
-            public int count { get; set; }
+            public ulong count { get; set; }
         }
 
         public class WhoWatchApiObject
@@ -163,17 +210,15 @@ namespace WhoWatchListen
 
         //////////////////////////////////////////
         /// <summary>
-        /// ライブID
+        /// ユーザーアカウント名
         /// </summary>
-        public string LiveId
-        {
-            get { return liveId;  }
-        }
+        public string AccountName { get; private set; }
 
         /// <summary>
         /// ライブID
         /// </summary>
-        private string liveId = "";
+        public ulong LiveId { get; private set; }
+
         /// <summary>
         /// 最終更新日時
         /// </summary>
@@ -187,12 +232,19 @@ namespace WhoWatchListen
         /// </summary>
         public event OnCommentReceiveDoneDelegate OnCommentReceiveDone = null;
         /// <summary>
+        /// ライブIDが変更された時のイベントハンドラ
+        /// </summary>
+        public event OnLiveIdChangedDelegate OnLiveIdChanged = null;
+        /// <summary>
         /// ふわっちコメント取得タイマー
         /// </summary>
         private DispatcherTimer whoWatchGetCommentDTimer;
+        /// <summary>
+        /// プロフィール取得タイマー
+        /// </summary>
+        private DispatcherTimer whoWatchGetProfileDTimer;
 
         private bool isTimerProcess = false; 
-
 
         /// <summary>
         /// コンストラクタ
@@ -202,22 +254,30 @@ namespace WhoWatchListen
             whoWatchGetCommentDTimer = new DispatcherTimer(DispatcherPriority.Normal);
             whoWatchGetCommentDTimer.Interval = new TimeSpan(0, 0, 2);
             whoWatchGetCommentDTimer.Tick += new EventHandler(whoWatchGetCommentDTimer_Tick);
+            whoWatchGetProfileDTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            whoWatchGetProfileDTimer.Interval = new TimeSpan(0, 0, 15);
+            whoWatchGetProfileDTimer.Tick += new EventHandler(whoWatchGetProfileDTimer_Tick);
         }
 
         /// <summary>
         /// 開始する
         /// </summary>
-        /// <param name="liveId"></param>
-        public void Start(string liveId)
+        /// <param name="accountName"></param>
+        public void Start(string accountName)
         {
-            // ライブIDをセットする
-            this.liveId = liveId;
+            this.AccountName = accountName;
+            this.LiveId = 0;
+
+            whoWatchGetProfile();
 
             // ふわっち形式の時間の生成
             this.lastUpdatedAt = MyUtil.GetUnixTime(DateTime.Now).ToString() + "000";
             System.Diagnostics.Debug.WriteLine("lastUpdatedAt (Initial):" + lastUpdatedAt);
 
+            whoWatchGetComments();
+
             whoWatchGetCommentDTimer.Start();
+            whoWatchGetProfileDTimer.Start();
         }
 
         /// <summary>
@@ -225,7 +285,25 @@ namespace WhoWatchListen
         /// </summary>
         public void Stop()
         {
+            whoWatchGetProfileDTimer.Stop();
             whoWatchGetCommentDTimer.Stop();
+        }
+
+        /// <summary>
+        /// ふわっちプロフィール取得タイマーイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void whoWatchGetProfileDTimer_Tick(object sender, EventArgs e)
+        {
+            ulong prevLiveId = this.LiveId; // 前のライブIDを退避
+
+            whoWatchGetProfile();
+
+            if (prevLiveId != this.LiveId)
+            {
+                OnLiveIdChanged(this);
+            }
         }
 
         /// <summary>
@@ -241,16 +319,51 @@ namespace WhoWatchListen
             }
 
             isTimerProcess = true;
-            whoWatchGetCommentsHandle();
+            whoWatchGetComments();
             isTimerProcess = false;
+        }
+
+        /// <summary>
+        /// ふわっちプロフィール取得
+        /// </summary>
+        private void whoWatchGetProfile()
+        {
+            if (this.AccountName == "")
+            {
+                System.Diagnostics.Debug.WriteLine("[ERROR]whoWatchGetCommentsHandle AccountName = (empty)");
+                return;
+            }
+            string apiUrl = " https://api.whowatch.tv/users/" + this.AccountName
+                            + "/profile?polling=true";
+
+            string recvStr = doHttpRequest(apiUrl);
+            try
+            {
+                // JSON形式からふわっちAPIオブジェクトに変換
+                WhoWatchProfileApiObject whoWatchApiObj = JsonConvert.DeserializeObject<WhoWatchProfileApiObject>(recvStr);
+                if (whoWatchApiObj.live != null)
+                {
+                    // JSONオブジェクトからライブIDを取得
+                    this.LiveId = whoWatchApiObj.live.id;
+                }
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+            }
         }
 
         /// <summary>
         /// ふわっちコメント取得処理
         /// </summary>
-        private void whoWatchGetCommentsHandle()
+        private void whoWatchGetComments()
         {
-            string apiUrl = " https://api.whowatch.tv/lives/" + liveId
+            if (this.LiveId == 0)
+            {
+                //System.Diagnostics.Debug.WriteLine("[ERROR]whoWatchGetCommentsHandle liveId = 0");
+                return;
+            }
+            string apiUrl = " https://api.whowatch.tv/lives/" + this.LiveId
                             + "?last_updated_at=" + lastUpdatedAt;
 
             string recvStr = doHttpRequest(apiUrl);
@@ -264,16 +377,10 @@ namespace WhoWatchListen
 
                 foreach(CommentStruct tagtComment in workCommentList)
                 {
-                    if (OnCommentReceiveEach != null)
-                    {
-                        OnCommentReceiveEach(this, tagtComment);
-                    }
+                    OnCommentReceiveEach(this, tagtComment);
 
                 }
-                if (OnCommentReceiveDone != null)
-                {
-                    OnCommentReceiveDone(this);
-                }
+                OnCommentReceiveDone(this);
 
 
                 // 更新日時の更新
@@ -285,6 +392,39 @@ namespace WhoWatchListen
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
             }
+        }
+
+        /// <summary>
+        /// ライブIDからアカウント名を取得する
+        /// </summary>
+        /// <param name="liveId"></param>
+        /// <returns></returns>
+        public string GetAccountNameFromLiveId(ulong liveId)
+        {
+            string accountName = "";
+            string lastUpdatedAt = MyUtil.GetUnixTime(DateTime.Now).ToString() + "000";
+            string apiUrl = " https://api.whowatch.tv/lives/" + liveId
+                            + "?last_updated_at=" + lastUpdatedAt;
+
+            string recvStr = doHttpRequest(apiUrl);
+
+            try
+            {
+                // JSON形式からふわっちAPIオブジェクトに変換
+                WhoWatchApiObject whoWatchApiObj = JsonConvert.DeserializeObject<WhoWatchApiObject>(recvStr);
+                if (whoWatchApiObj.live != null &&
+                    whoWatchApiObj.live.user != null)
+                {
+                    // アカウント名(Note:ふわっちAPIではuser_pathにあたる. account_nameは別物)
+                    accountName = whoWatchApiObj.live.user.user_path;
+                }
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+            }
+
+            return accountName;
         }
 
         /// <summary>
@@ -341,9 +481,6 @@ namespace WhoWatchListen
 
                 workCommentList.Add(workComment);
             }
-
-
-
             return workCommentList;
 
         }
